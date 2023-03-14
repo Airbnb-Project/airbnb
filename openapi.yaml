@@ -276,6 +276,47 @@ paths:
         500:
           $ref: "#/components/responses/500"
 
+# HOMESTAY
+  /homestays:
+    post:
+      tags:
+        - Homestay
+      summary: "Create Homestay" 
+      description: "Create New Homestay"
+      security:
+        - JWTAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InsertHomestayObject"
+            example:
+              name: "Villa puncak"
+              homestay address: "jl. kenanga, Malang"
+              phone: 089777777
+              price: 300000
+              description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+              image1: AAkGBhQSERUUExQVFRUWGRwaGBgYGB0dGxkcHx
+              image2: AAkGBhQSERUUExQVFRUWGRwaGBgYGB0dGxkcHx
+              image3: AAkGBhQSERUUExQVFRUWGRwaGBgYGB0dGxkcHx
+      responses:
+        201:
+          description: "Success Create Homestay"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseWithoutData"
+              example:
+                status: "Success"
+                message: "Success Create New Homestay"
+        400 :
+          $ref : "#/components/responses/400"  
+        404 :
+          $ref : "#/components/responses/404"  
+        500:
+          $ref: "#/components/responses/500"
+
 components:
     securitySchemes:
         JWTAuth:
@@ -296,6 +337,82 @@ components:
             properties:
                 message:
                     type: string
+        ### Homestay Schemas
+        "InsertHomestayObject":
+          type: object
+          properties:
+            "name":
+              type: string
+            "address":
+              type: string
+            "phone":
+              type: integer
+            "price": 
+              type: integer
+            "image1":
+              type: string
+              format: binary
+            "image2":
+              type: string
+              format: binary
+            "image3":
+              type: string
+              format: binary
+            "description":
+              type: string    
+        "EditHomestayObject":
+          type: object
+          properties:
+            "name":
+              type: string
+            "address":
+              type: string
+            "phone":
+              type: integer
+            "price": 
+              type: integer
+            "image1":
+              type: string
+              format: binary
+            "image2":
+              type: string
+              format: binary
+            "image3":
+              type: string
+              format: binary
+            "description":
+              type: string 
+
+        ### Feedbacks Schemas
+        "InsertFeedbackObject":
+          type: object
+          properties:
+            "id homestay":
+              type: integer
+            "rating":
+              type: string
+            "feedback":
+              type: string
+            "id_homestay":
+              type: string        
+
+        "ResponseWithoutData":
+          type: object
+          properties:
+            status:
+              type: string
+            message:
+              type: string
+        "ResponseWithData":
+          type: object
+          properties:
+            status:
+              type: string
+            message: 
+              type: string
+            data:
+              type: object
+              
     examples:
         formatUploadError:
             value:
