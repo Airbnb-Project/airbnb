@@ -255,6 +255,27 @@ paths:
                   value:
                     message: internal server error
 
+    delete:
+      tags:
+        - "User"
+      summary: "deactive user account"
+      description: "endpoint for deactive user account"
+      security:
+        - JWTAuth: []
+      responses:
+        200:
+          description: "deactive user account"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseObject"
+              example:
+                message: "success delete account"
+        404:
+          $ref: "#/components/responses/404"
+        500:
+          $ref: "#/components/responses/500"
+
 components:
     securitySchemes:
         JWTAuth:
