@@ -22,7 +22,51 @@ tags:
   - name: Reservation
   - name: Feedback
 
-
+# AUTH
+paths:
+  /login:
+    post:
+      tags:
+        - "Auth"
+      description: "Features login for users"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+            example:
+              email: "grf@example.com"
+              password: "grf123"
+      responses:
+        200:
+          description: "login"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseObject"
+              example:
+                data:
+                  id: 1
+                  name: "griffin"
+                  email: "grf@example.com"
+                  phone: "0812345"
+                  address: "makassar"
+                message: "login success"
+                token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJ1c2VySUQiOjR9.QTZxERh4CwC_UnL_eJvTi_A_qdLeBZ-IjR4nqoxjodk"
+        400:
+          $ref: "#/components/responses/400"
+        404:
+          $ref: "#/components/responses/404"
+        500:
+          $ref: "#/components/responses/500"
 
 components:
     securitySchemes:
