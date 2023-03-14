@@ -143,7 +143,63 @@ paths:
                             value:
                                 message: password process error
 
-    
+    get:
+      tags:
+        - "User"
+      summary: "show detail profile"
+      description: "endpoint for user see their own profile"
+      security:
+        - JWTAuth: []
+      responses:
+        200:
+          description: "show detail user profile"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseObject"
+              example:
+                data:
+                  id: 1
+                  name: "griffin"
+                  email: "grf@example.com"
+                  address: "makassar"
+                  role: ""
+                  phone: "0812345"
+                  photo_profile: ""
+                  homestay:
+                    - id: 1
+                      name: "villa premium 1"
+                      description: "villa di pegunungan yang sejuk"
+                      price: "500.000/night"
+                    - id: 2
+                      name: "villa premium 2"
+                      description: "villa di sawah yang sejuk"
+                      price: "500.000/night" 
+                    - id: 3
+                      name: "villa premium 3"
+                      description: "villa di pinggiran kota yang sejuk"
+                      price: "500.000/night" 
+                message: "success show profile"
+        400:
+          $ref: "#/components/responses/400"
+        404:
+          description: not found
+          content:
+              application/json:
+                  schema:
+                      type: object
+                      properties:
+                          message:
+                              type: string
+                  examples:
+                      dataNotFound:
+                          description: data user not found
+                          value:
+                              message: data not found
+                      pathNotFound:
+                          $ref: "#/components/examples/pathNotFound"
+        500:
+          $ref: "#/components/responses/500"
   
 
 components:
