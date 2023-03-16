@@ -22,8 +22,8 @@ tags:
   - name: Reservation
   - name: Feedback
 
-# AUTH
 paths:
+# AUTH
   /login:
     post:
       tags:
@@ -281,8 +281,8 @@ paths:
     post:
       tags:
         - Homestay
-      summary: "Create Homestay" 
-      description: "Create New Homestay"
+      summary: "create homestay" 
+      description: "create new homestay"
       security:
         - JWTAuth: []
       requestBody:
@@ -293,10 +293,10 @@ paths:
               $ref: "#/components/schemas/InsertHomestayObject"
             example:
               name: "Villa puncak"
-              homestay address: "jl. kenanga, Malang"
+              address: "jl. kenanga, Malang"
               phone: 089777777
               price: 300000
-              description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+              facility: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
               image1: AAkGBhQSERUUExQVFRUWGRwaGBgYGB0dGxkcHx
               image2: AAkGBhQSERUUExQVFRUWGRwaGBgYGB0dGxkcHx
               image3: AAkGBhQSERUUExQVFRUWGRwaGBgYGB0dGxkcHx
@@ -308,8 +308,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/ResponseWithoutData"
               example:
-                status: "Success"
-                message: "Success Create New Homestay"
+                message: "success create homestay"
         400 :
           $ref : "#/components/responses/400"  
         404 :
@@ -317,171 +316,448 @@ paths:
         500:
           $ref: "#/components/responses/500"
 
+    get:
+      tags:
+        - Homestay
+      summary: "get all homestay"
+      description: "get all homestay and can use query parameter to search. Input using lowercase"
+      security:
+        - JWTAuth: []
+      parameters:
+        - name: name
+          description: "Homestay Name"
+          required: false
+          in: query
+          schema:
+            type: string
+            example: "Villa puncak"
+      responses:
+        200:
+          description: A list of Homestay
+          content:
+            multipart/form-data:
+              schema:
+                $ref: "#/components/schemas/ResponseWithData"
+              example:
+                  data:
+                    - id: 1
+                      name: "Villa puncak"
+                      total_rating: 4.5
+                      address: "jl. kenanga, Malang"
+                      phone: 089777777
+                      price: 300000
+                      facility: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+                      image1: AAkGBhQSERUUExQVFRUWGRwaGBgYGB0dGxkcHx
+                    - id: 2
+                      name: "Villa puncak"
+                      total_rating: 4.5
+                      address: "jl. kenanga, Malang"
+                      phone: 089777777
+                      price: 300000
+                      facility: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+                      image1: AAkGBhQSERUUExQVFRUWGRwaGBgYGB0dGxkcHx
+                  message: "success show all homestay"
+        400 :
+          $ref : "#/components/responses/400"  
+        404:
+          description: not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              examples:
+                pathNotFound:
+                  $ref: "#/components/examples/pathNotFound"
+                homestayNotFound:
+                  description: data homestay not found
+                  value:
+                    message: homestay not found  
+        500:
+          $ref: "#/components/responses/500"
+
+  /homestays/{id}:
+    get:
+      tags:
+        - Homestay
+      summary: "get homestay by id"
+      description: "Get Homestay using id class at path parameter. Only return 1 data."
+      security:
+        - JWTAuth: []
+      parameters:
+        - name: homestay_id
+          required: true
+          in: path
+          schema:
+            description: "Id homestay 1"
+            type: integer
+            example: 1
+      responses:
+        200:
+          description: "Success Get Homestay by Id"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseWithData"
+              example:
+                  data:
+                    id: 1
+                    name: "Villa puncak"
+                    total_rating: 5
+                    address: "jl. kenanga, Malang"
+                    phone: "089777777"
+                    price: 300000
+                    facility: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+                    image1: AAkGBhQSERUUExQVFRUWGRwaGBgYGB0dGxkcHx
+                    image2: AAkGBhQSERUUExQVFRUWGRwaGBgYGB0dGxkcHx
+                    image3: AAkGBhQSERUUExQVFRUWGRwaGBgYGB0dGxkcHx
+                  message: "success show homestay"
+        400 :
+          $ref : "#/components/responses/400"  
+        404:
+          description: not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              examples:
+                pathNotFound:
+                  $ref: "#/components/examples/pathNotFound"
+                homestayNotFound:
+                  description: data homestay not found
+                  value:
+                    message: homestay not found  
+        500:
+          $ref: "#/components/responses/500"
+
+    put:
+      tags:
+        - Homestay
+      summary: "update homestays"
+      description: "Update Homestay using request body and using id for reference at path parameter."
+      security:
+        - JWTAuth: []
+      parameters:
+        - name: homestay_id
+          required: true
+          in: path
+          schema:
+            description: "Id homestay 1"
+            type: integer
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+                $ref: "#/components/schemas/EditHomestayObject"
+            example:
+                name: "Villa puncak"
+                address: "jl. kenanga, Malang"
+                phone: 089777777
+                price: 300000
+                facility: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+                image1: AAkGBhQSERUUExQVFRUWGRwaGBgYGB0dGxkcHx
+                image2: AAkGBhQSERUUExQVFRUWGRwaGBgYGB0dGxkcHx
+                image3: AAkGBhQSERUUExQVFRUWGRwaGBgYGB0dGxkcHx
+      responses:
+        200:
+          description: "Success Update Homestay"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseWithoutData" 
+              example:
+                  message: "success update homestay"
+        400 :
+          $ref : "#/components/responses/400"  
+        404:
+          description: not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                   type: string
+              examples:
+                pathNotFound:
+                  $ref: "#/components/examples/pathNotFound"
+                homestayNotFound:
+                  description: data homestay not found
+                  value:
+                    message: homestay not found  
+        500:
+          $ref: "#/components/responses/500"
+
+    delete:
+      tags:
+        - Homestay
+      summary: "delete homestays"
+      description: "Delete homestay using id at path parameter as reference."
+      security:
+        - JWTAuth: []
+      parameters:
+        - name: homestay_id
+          required: true
+          in: path
+          schema:
+            description: "Id homestay 1."
+            type: integer
+            example: 1
+      responses:
+        200:
+          description: "Success Delete Homestay"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseWithoutData" 
+              example:
+                  message: "success delete homestay"
+        400 :
+          $ref : "#/components/responses/400"  
+        401:
+          $ref: "#/components/responses/401"
+        404:
+          description: not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              examples:
+                pathNotFound:
+                  $ref: "#/components/examples/pathNotFound"
+                campNotFound:
+                  description: data camp not found
+                  value:
+                    message: camp not found  
+        500:
+          $ref: "#/components/responses/500"
+
+# SHOW OWN HOMESTAY LIST
+  /myhomestays:
+    get:
+      tags: 
+        - "Homestay"
+      summary: "show own homestay list"
+      description: "show own homestay list"
+      security:
+        - JWTAuth: []
+      responses:
+        200:
+          description: "show own homestay list"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseObjectArr"
+              example:
+                data: 
+                  - id: 1
+                    user_id: 1
+                    name: "Villa 1"
+                    total_rating: 4.5
+                    facility: "5 Kamar Tidur, 2 Kamar Mandi dalam, AC, Private Pool, dan Rooftop"
+                    price: 500000
+                  - id: 2
+                    user_id: 1
+                    name: "Villa 2"
+                    total_rating: 4.5
+                    facility: "5 Kamar Tidur, 2 Kamar Mandi dalam, AC, Private Pool, dan Rooftop"
+                    price: 500000
+                  - id: 3
+                    user_id: 1
+                    name: "Villa 3"
+                    total_rating: 4.5
+                    facility: "5 Kamar Tidur, 2 Kamar Mandi dalam, AC, Private Pool, dan Rooftop"
+                    price: 500000
+                message: "success show own homestay list"
+        400:
+          $ref: "#/components/responses/400"
+        500:
+          $ref: "#/components/responses/500"
+
 components:
     securitySchemes:
-        JWTAuth:
-            type: http
-            scheme: bearer
-            bearerFormat: JWT
-            description: "user token"
+      JWTAuth:
+        type: http
+        scheme: bearer
+        bearerFormat: JWT
+        description: "user token"
     schemas:
-        responseObject:
+      responseObject:
+        type: object
+        properties:
+          data:
             type: object
-            properties:
-                data:
-                    type: object
-                message:
-                    type: string
-        errorResponse:
-            type: object
-            properties:
-                message:
-                    type: string
-        ### Homestay Schemas
-        "InsertHomestayObject":
-          type: object
-          properties:
-            "name":
-              type: string
-            "address":
-              type: string
-            "phone":
-              type: integer
-            "price": 
-              type: integer
-            "image1":
-              type: string
-              format: binary
-            "image2":
-              type: string
-              format: binary
-            "image3":
-              type: string
-              format: binary
-            "description":
-              type: string    
-        "EditHomestayObject":
-          type: object
-          properties:
-            "name":
-              type: string
-            "address":
-              type: string
-            "phone":
-              type: integer
-            "price": 
-              type: integer
-            "image1":
-              type: string
-              format: binary
-            "image2":
-              type: string
-              format: binary
-            "image3":
-              type: string
-              format: binary
-            "description":
-              type: string 
-
-        ### Feedbacks Schemas
-        "InsertFeedbackObject":
-          type: object
-          properties:
-            "id homestay":
-              type: integer
-            "rating":
-              type: string
-            "feedback":
-              type: string
-            "id_homestay":
-              type: string        
-
-        "ResponseWithoutData":
-          type: object
-          properties:
-            status:
-              type: string
-            message:
-              type: string
-        "ResponseWithData":
-          type: object
-          properties:
-            status:
-              type: string
-            message: 
-              type: string
-            data:
+          message:
+            type: string
+      responseObjectArr:
+        type: object
+        properties:
+          data:
+            type: array
+            items:
               type: object
+          message:
+            type: string
+      errorResponse:
+          type: object
+          properties:
+              message:
+                  type: string
+
+      ### Homestay Schemas
+      InsertHomestayObject:
+        type: object
+        properties:
+          "name":
+            type: string
+          "address":
+            type: string
+          "phone":
+            type: integer
+          "price": 
+            type: integer
+          "image1":
+            type: string
+            format: binary
+          "image2":
+            type: string
+            format: binary
+          "image3":
+            type: string
+            format: binary
+          "facility":
+            type: string    
+      EditHomestayObject:
+        type: object
+        properties:
+          "name":
+            type: string
+          "address":
+            type: string
+          "phone":
+            type: integer
+          "price": 
+            type: integer
+          "image1":
+            type: string
+            format: binary
+          "image2":
+            type: string
+            format: binary
+          "image3":
+            type: string
+            format: binary
+          "description":
+            type: string 
+
+      ### Feedbacks Schemas
+      InsertFeedbackObject:
+        type: object
+        properties:
+          "id homestay":
+            type: integer
+          "rating":
+            type: string
+          "feedback":
+            type: string
+          "id_homestay":
+            type: string 
+      ResponseWithoutData:
+        type: object
+        properties:
+          status:
+            type: string
+          message:
+            type: string
+      ResponseWithData:
+        type: object
+        properties:
+          status:
+            type: string
+          message: 
+            type: string
+          data:
+            type: object
               
     examples:
-        formatUploadError:
-            value:
-                message: bad request because of format not pdf, png, jpg, or jpeg
-        validationError:
-            value:
-                message: field_name value must be the_condition
-        failedUploadError:
-            value:
-                message: failed to upload image because internal server error
-        credentialError:
-            value:
-                message: access is denied due to invalid credential
-        internalServerError:
-            value:
-                message: internal server error
-        pathNotFound:
-            description: url path not found
-            value:
-                message: Not Found
+      formatUploadError:
+          value:
+              message: bad request because of format not pdf, png, jpg, or jpeg
+      validationError:
+          value:
+              message: field_name value must be the_condition
+      failedUploadError:
+          value:
+              message: failed to upload image because internal server error
+      credentialError:
+          value:
+              message: access is denied due to invalid credential
+      internalServerError:
+          value:
+              message: internal server error
+      pathNotFound:
+          description: url path not found
+          value:
+              message: Not Found
 
-            # responseObjectArr:
-            # type: object
-            # properties:
-            #     data:
-            #         type: array
-            #         items:
-            #             type: object
-            #     message:
-            #         type: string
+          # responseObjectArr:
+          # type: object
+          # properties:
+          #     data:
+          #         type: array
+          #         items:
+          #             type: object
+          #     message:
+          #         type: string
     responses:
-        400:
-            description: "error from user"
-            content:
-                application/json:
-                    schema:
-                        type: object
-                        properties:
-                            message:
-                                type: string
-                    example:
-                        message: "bad request"
-        401:
-            description: "unauthorized"
-            content:
-                application/json:
-                    schema:
-                        type: object
-                        properties:
-                            message:
-                                type: string
-                    example:
-                        message: access is denied due to invalid credential
-        404:
-            description: "url path not found"
-            content:
-                application/json:
-                    schema:
-                        $ref: "#/components/schemas/errorResponse"
-                    example:
-                        message: not found
-        500:
-            description: "error from server"
-            content:
-                application/json:
-                    schema:
-                        type: object
-                        properties:
-                            message:
-                                type: string
-                    example:
-                        message: "internal server error"
+      400:
+        description: "error from user"
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+            example:
+              message: "bad request"
+      401:
+        description: "unauthorized"
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+            example:
+              message: access is denied due to invalid credential
+      404:
+        description: "url path not found"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/errorResponse"
+            example:
+              message: not found
+      500:
+        description: "error from server"
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+            example:
+              message: "internal server error"
