@@ -40,6 +40,12 @@ func (uq *userQuery) Register(newUser user.Core) (user.Core, error) {
 }
 
 func (uq *userQuery) Login(email string) (user.Core, error) {
+	// check if email is empty
+	if email == "" {
+		log.Println("empty email")
+		return user.Core{}, errors.New("email is empty")
+	}
+
 	usr := User{}
 	err := uq.db.Where("email = ?", email).First(&usr).Error
 	if err != nil {
