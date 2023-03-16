@@ -1,6 +1,7 @@
 package data
 
 import (
+	"airbnb/feature/homestay/data"
 	"airbnb/feature/user"
 
 	"gorm.io/gorm"
@@ -16,6 +17,7 @@ type User struct {
 	ProfilePicture string
 	Phone          string
 	Address        string
+	Homestay       []data.Homestay `gorm:"foreignKey:UserID"`
 }
 
 func DataToCore(data User) user.Core {
