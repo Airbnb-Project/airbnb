@@ -1,6 +1,8 @@
 package config
 
 import (
+	home "airbnb/feature/homestay/data"
+	"airbnb/feature/user/data"
 	"fmt"
 	"log"
 
@@ -21,5 +23,7 @@ func InitDB(ac AppConfig) *gorm.DB {
 }
 
 func Migrate(db *gorm.DB) {
-	// db.AutoMigrate(&user.User{})
+	db.AutoMigrate(&data.User{})
+	db.AutoMigrate(&home.Homestay{})
+	db.AutoMigrate(&home.Image{})
 }
