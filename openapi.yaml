@@ -715,6 +715,80 @@ paths:
         500:
           $ref: "#/components/responses/500"
 
+# FEEDBACK
+  /feedbacks:
+    post:
+      tags:
+        - Feedback
+      summary: "Create Feedback" 
+      description: "Create New Feedback for homestay"
+      security:
+        - JWTAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InsertFeedbackObject"
+            example:
+              id_homestay: 1
+              rating: 4.5
+              note: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla interdum convallis tortor eget scelerisque. Sed diam risus, tincidunt at lacinia a, hendrerit at massa. Maecenas tincidunt convallis rhoncus. Maecenas augue tellus, interdum non nulla a, bibendum dapibus nulla. Nullam at lorem diam. Integer nec urna commodo, gravida est fringilla, ultricies velit. Suspendisse potenti."
+      responses:
+        201:
+          description: "Success create data"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseWithoutData"
+              example:
+                message: "success add feedback"
+        400 :
+          $ref : "#/components/responses/400"  
+        404 :
+          $ref : "#/components/responses/404"  
+        500:
+          $ref: "#/components/responses/500"
+
+  /homestays/{homestay_id}/feedbacks:
+    get:
+      tags:
+        - "Homestay"
+      summary: "Show feedback list"
+      description: "Show feedback list by homestay ID"
+      security:
+        - JWTAuth: []
+      parameters:
+        - name: homestay_id
+          description: "ID homestay"
+          required: true
+          in: path
+          schema:
+            type: integer
+      responses:
+        200:
+          description: "show own list feedback in homestay"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseObjectArr"
+              example:
+                data: 
+                - id: 1
+                  rating: 4.5
+                  note: "oke"
+                  user:
+                    - id: 1
+                      name: "Aldi"
+                      photo_profile: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+                - id: 2
+                  rating: 4.5
+                  note: "boleh deh"
+                  user:
+                    - id: 2
+                      name: "Soleh"
+                      photo_profile: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+
 components:
     securitySchemes:
       JWTAuth:
