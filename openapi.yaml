@@ -584,6 +584,137 @@ paths:
         500:
           $ref: "#/components/responses/500"
 
+# RESERVATION
+  /reservations/check:
+    post:
+      tags:
+        - "Reservation"
+      summary: "check reservation"
+      description: "endpoint for user to check reservation"
+      security:
+        - JWTAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                check_in:
+                  type: string
+                check_out:
+                  type: string
+                price:
+                  type: number
+            example:
+              homestay_id: 1
+              check_in: "2023-03-11"
+              check_out: "2023-03-12"
+      responses:
+        201:
+          description: "check reservation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseObject"
+              example:
+                data:
+                  homestay_id: 1
+                  check_in: "2023-03-11"
+                  check_out: "2023-03-12"
+                message: "success add reservation"
+        400:
+          $ref: "#/components/responses/400"
+        500:
+          $ref: "#/components/responses/500"
+
+  /reservations:
+    post:
+      tags:
+        - "Reservation"
+      summary: "make reservation"
+      description: "endpoint for user to make their reservation"
+      security:
+        - JWTAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+            example:
+              check_in: "2023-03-10"
+              check_out: "2023-03-12"
+              price: 1.500.000
+              name: "ida"
+              card_number: "4154 1215 4588 1547"
+              cvv: "578"
+              month: "May"
+              year: "2020"
+      responses:
+        200:
+          description: "make reservation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseObject"
+              example:
+                data:
+                  id: 2
+                  check_in: "2023-03-10"
+                  check_out: "2023-03-12"
+                  price: 1.500.000
+                message: "reservation success"
+        400:
+          $ref: "#/components/responses/400"
+        404:
+          $ref: "#/components/responses/404"
+        500:
+          $ref: "#/components/responses/500"
+    get:
+      tags:
+        - "Reservation"
+      summary: "show history reservation"
+      description: "endpoint for show history user reservations"
+      security:
+        - JWTAuth: []
+      responses:
+        200:
+          description: "show history reservation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseObject"
+              example:
+                data:
+                  room_id: 1
+                  room_name: "Villa puncak"
+                  check_in: "2023-03-13"
+                  check_out: "2023-03-17"
+                  address: "somewhere"
+                  price: 4000000
+                message: "success show history reservation"
+        400:
+          $ref: "#/components/responses/400"
+        404:
+          description: not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                   type: string
+              examples:
+                pathNotFound:
+                  $ref: "#/components/examples/pathNotFound"
+                reservationNotFound:
+                  description: data reservation not found
+                  value:
+                    message: reservation not found  
+        500:
+          $ref: "#/components/responses/500"
+
 components:
     securitySchemes:
       JWTAuth:
