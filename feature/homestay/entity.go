@@ -41,7 +41,7 @@ type HomeService interface {
 
 type HomeData interface {
 	Add(userID uint, newHomestay Core) (Core, error)
-	List(limit int, offset int) ([]Core, error)
+	List(limit int, offset int) (int, []Core, error)
 	GetbyID(homestayID uint) (Core, error)
 	Update(userID uint, homestayID uint, updateHomestay Core) (Core, error)
 	Delete(userID uint, homestayID uint) error
