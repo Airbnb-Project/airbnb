@@ -32,18 +32,18 @@ type HomeHandler interface {
 
 type HomeService interface {
 	Add(token interface{}, newHomestay Core, images []*multipart.FileHeader) (Core, error)
-	// List(page int) (map[string]interface{}, []Core, error)
-	// GetbyID(homestayID uint) (Core, error)
-	// Update(token interface{}, homestayID uint, updateHomestay Core, images []*multipart.FileHeader) (Core, error)
-	// Delete(token interface{}, homestayID uint) error
-	// Myhome(token interface{}) ([]Core, error)
+	List(page int) (map[string]interface{}, []Core, error)
+	GetbyID(homestayID uint) (Core, error)
+	Update(token interface{}, homestayID uint, updateHomestay Core, images []*multipart.FileHeader) (Core, error)
+	Delete(token interface{}, homestayID uint) error
+	Myhome(token interface{}) ([]Core, error)
 }
 
 type HomeData interface {
 	Add(userID uint, newHomestay Core) (Core, error)
-	// List(limit int, offset int) ([]Core, error)
-	// GetbyID(homestayID uint) (Core, error)
-	// Update(userID uint, homestayID uint, updateHomestay Core) (Core, error)
-	// Delete(userID uint, homestayID uint) error
-	// Myhome(userID uint) ([]Core, error)
+	List(limit int, offset int) ([]Core, error)
+	GetbyID(homestayID uint) (Core, error)
+	Update(userID uint, homestayID uint, updateHomestay Core) (Core, error)
+	Delete(userID uint, homestayID uint) error
+	Myhome(userID uint) ([]Core, error)
 }

@@ -2,6 +2,8 @@ package data
 
 import (
 	"airbnb/feature/homestay"
+	"errors"
+	"log"
 
 	"gorm.io/gorm"
 )
@@ -17,8 +19,25 @@ func New(db *gorm.DB) homestay.HomeData {
 func (hd *homeData) Add(userID uint, newHomestay homestay.Core) (homestay.Core, error) {
 	cnv := CoreToData(newHomestay)
 	cnv.UserID = userID
-	hd.db.Create(&cnv)
-	return homestay.Core{}, nil
+	// hd.db.Create(&cnv)
+	err := hd.db.Create(&cnv).Error
+	if err != nil {
+		log.Println("query add homestay error", err.Error())
+		return homestay.Core{}, errors.New("cannot create homestay")
+	}
+
+	for _, v := range cnv.Images {
+		err = hd.db.Exec("INSERT INTO images(homestay_id, image_url) VALUES(?, ?)", v.HomestayID, v.ImageURL).Error
+		if err != nil {
+			log.Println("query add image error", err.Error())
+			return homestay.Core{}, errors.New("cannot insert image")
+		}
+
+	}
+
+	newHomestay.ID = cnv.ID
+
+	return newHomestay, nil
 }
 
 func (hd *homeData) List(limit int, offset int) ([]homestay.Core, error) {
