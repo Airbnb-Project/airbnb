@@ -5,6 +5,7 @@ import (
 	"airbnb/helper"
 	"errors"
 	"log"
+	"math"
 	"mime/multipart"
 	"strings"
 
@@ -59,16 +60,40 @@ func (hs *homeService) Add(token interface{}, newHomestay homestay.Core, imagesD
 
 	res, err := hs.qry.Add(id, newHomestay)
 	if err != nil {
-		{
-			return homestay.Core{}, errors.New("internal server error")
-		}
+		return homestay.Core{}, errors.New("internal server error")
 	}
 
 	return res, nil
 }
 
 func (hs *homeService) List(page int) (map[string]interface{}, []homestay.Core, error) {
-	return make(map[string]interface{}), []homestay.Core{}, nil
+	if page < 1 {
+		page = 1
+	}
+
+	// limit optional, if limit change, offset change
+	limit := 4
+	offset := (page - 1) * limit
+
+	totalRecord, res, err := hs.qry.List(limit, offset)
+	if err != nil {
+		log.Println(err)
+		return nil, nil, errors.New("internal server error")
+	}
+
+	totalPage := int(math.Ceil(float64(totalRecord) / float64(limit)))
+	if page > totalPage {
+		return nil, nil, errors.New("page not found")
+	}
+
+	pagination := make(map[string]interface{})
+	pagination["page"] = page
+	pagination["limit"] = limit
+	pagination["offset"] = offset
+	pagination["totalRecord"] = totalRecord
+	pagination["totalPage"] = totalPage
+
+	return pagination, res, nil
 }
 
 func (hs *homeService) GetbyID(homestayID uint) (homestay.Core, error) {
