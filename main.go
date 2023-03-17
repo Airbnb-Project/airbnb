@@ -48,16 +48,16 @@ func main() {
 	// ROUTE
 	e.POST("/register", uHdl.Register())
 	e.POST("/login", uHdl.Login())
-	e.POST("/users", uHdl.Profile(), middleware.JWT([]byte(config.JWT_KEY)))
-	e.POST("/users", uHdl.Update(), middleware.JWT([]byte(config.JWT_KEY)))
-	e.POST("/users", uHdl.Delete(), middleware.JWT([]byte(config.JWT_KEY)))
+	e.GET("/users", uHdl.Profile(), middleware.JWT([]byte(config.JWT_KEY)))
+	e.PUT("/users", uHdl.Update(), middleware.JWT([]byte(config.JWT_KEY)))
+	e.DELETE("/users", uHdl.Delete(), middleware.JWT([]byte(config.JWT_KEY)))
 
 	e.POST("/homestays", hHdl.Add(), middleware.JWT([]byte(config.JWT_KEY)))
-	e.POST("/homestays", hHdl.List())
-	e.POST("/homestays", hHdl.GetbyID())
-	e.POST("/homestays", hHdl.Update(), middleware.JWT([]byte(config.JWT_KEY)))
-	e.POST("/homestays", hHdl.Delete(), middleware.JWT([]byte(config.JWT_KEY)))
-	e.POST("/homestays", hHdl.Myhome(), middleware.JWT([]byte(config.JWT_KEY)))
+	e.GET("/homestays", hHdl.List())
+	e.GET("/homestays/:id", hHdl.GetbyID())
+	e.PUT("/homestays/:id", hHdl.Update(), middleware.JWT([]byte(config.JWT_KEY)))
+	e.DELETE("/homestays/:id", hHdl.Delete(), middleware.JWT([]byte(config.JWT_KEY)))
+	e.GET("/homestays", hHdl.Myhome(), middleware.JWT([]byte(config.JWT_KEY)))
 
 	if err := e.Start(":8000"); err != nil {
 		log.Println(err.Error())
