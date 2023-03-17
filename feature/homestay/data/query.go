@@ -40,8 +40,31 @@ func (hd *homeData) Add(userID uint, newHomestay homestay.Core) (homestay.Core, 
 	return newHomestay, nil
 }
 
-func (hd *homeData) List(limit int, offset int) ([]homestay.Core, error) {
-	return []homestay.Core{}, nil
+func (hd *homeData) List(limit int, offset int) (int, []homestay.Core, error) {
+	hs := []Homestay{}
+	err := hd.db.Limit(limit).Offset(offset).Order("created_at DESC, id DESC").Find(&hs).Error
+	if err != nil {
+		log.Println("show list query error", err.Error())
+		return 0, []homestay.Core{}, errors.New("cannot show list homestay")
+	}
+
+	// find homestay images
+	img := Image{}
+	for _, v := range hs {
+		err := hd.db.Where("id = ?", v.ID).First(&img).Error
+		if err != nil {
+			log.Println("find image home query error", err.Error())
+			return 0, []homestay.Core{}, errors.New("cannot find image from homestay")
+		}
+	}
+
+	list := []homestay.Core{}
+	for _, v := range hs {
+		list = append(list, DataToCore(v))
+	}
+	var totalRecord int
+
+	return totalRecord, list, nil
 }
 
 func (hd *homeData) GetbyID(homestayID uint) (homestay.Core, error) {
