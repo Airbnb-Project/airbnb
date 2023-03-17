@@ -11,7 +11,7 @@ type Core struct {
 	Name           string
 	Email          string `validate:"required,email"`
 	Password       string `validate:"min=5"`
-	Role           string `validate:"min=4"`
+	Role           string
 	ProfilePicture string
 	Phone          string
 	Address        string
