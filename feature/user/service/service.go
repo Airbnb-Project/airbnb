@@ -44,7 +44,7 @@ func (uuc *userUseCase) Register(newUser user.Core) (user.Core, error) {
 	res, err := uuc.qry.Register(newUser)
 	if err != nil {
 		var msg string
-		if strings.Contains(err.Error(), "duplicated") {
+		if strings.Contains(err.Error(), "registered") {
 			msg = "data already used"
 		} else {
 			msg = "server error"
@@ -75,7 +75,7 @@ func (uuc *userUseCase) Login(email string, password string) (string, user.Core,
 	}
 
 	useToken, _ := helper.GenerateToken(int(res.ID))
-	return useToken, user.Core{}, nil
+	return useToken, res, nil
 }
 
 func (uuc *userUseCase) Profile(token interface{}) (user.Core, error) {
