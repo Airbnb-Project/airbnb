@@ -8,5 +8,5 @@ type AddRequest struct {
 	Phone      string  `json:"phone" form:"phone"`
 	Price      float64 `json:"price" form:"price"`
 	Facility   string  `json:"facility" form:"facility"`
-	FileHeader multipart.FileHeader
+	FileHeader []multipart.FileHeader
 }
