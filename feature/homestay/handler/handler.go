@@ -144,6 +144,11 @@ func (hh *homeHandler) Update() echo.HandlerFunc {
 			return c.JSON(helper.ErrorResponse(err.Error()))
 		}
 
+		images, found := form.File["images"]
+		if found {
+			return nil
+		}
+
 		updateHome := homestay.Core{}
 		err = copier.Copy(&updateHome, &input)
 		if err != nil {
@@ -151,7 +156,7 @@ func (hh *homeHandler) Update() echo.HandlerFunc {
 			return c.JSON(helper.ErrorResponse("bad request"))
 		}
 
-		_, err = hh.srv.Update(token, uint(homestayID), updateHome, form)
+		_, err = hh.srv.Update(token, uint(homestayID), updateHome, images)
 		if err != nil {
 			return c.JSON(helper.ErrorResponse(err.Error()))
 		}
