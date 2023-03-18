@@ -60,6 +60,7 @@ func (hs *homeService) Add(token interface{}, newHomestay homestay.Core, imagesD
 
 	res, err := hs.qry.Add(id, newHomestay)
 	if err != nil {
+		log.Println(err)
 		return homestay.Core{}, errors.New("internal server error")
 	}
 
@@ -78,7 +79,13 @@ func (hs *homeService) List(page int) (map[string]interface{}, []homestay.Core, 
 	totalRecord, res, err := hs.qry.List(limit, offset)
 	if err != nil {
 		log.Println(err)
-		return nil, nil, errors.New("internal server error")
+		var msg string
+		if strings.Contains(err.Error(), "not found") {
+			msg = "homestay not found"
+		} else {
+			msg = "internal server error"
+		}
+		return nil, []homestay.Core{}, errors.New(msg)
 	}
 
 	totalPage := int(math.Ceil(float64(totalRecord) / float64(limit)))
@@ -97,17 +104,92 @@ func (hs *homeService) List(page int) (map[string]interface{}, []homestay.Core, 
 }
 
 func (hs *homeService) GetbyID(homestayID uint) (homestay.Core, error) {
-	return homestay.Core{}, nil
+	res, err := hs.qry.GetbyID(homestayID)
+	if err != nil {
+		log.Println(err)
+		var msg string
+		if strings.Contains(err.Error(), "not found") {
+			msg = "homestay not found"
+		} else {
+			msg = "internal server error"
+		}
+		return homestay.Core{}, errors.New(msg)
+	}
+
+	return res, nil
 }
 
 func (hs *homeService) Update(token interface{}, homestayID uint, updateHomestay homestay.Core, images []*multipart.FileHeader) (homestay.Core, error) {
-	return homestay.Core{}, nil
+	id := helper.ExtractToken(token)
+
+	// check if images are exist
+	if len(images) != 0 {
+		// check format file/images
+		for _, v := range images {
+			fileimg := strings.Split(v.Filename, ".")
+			format := fileimg[len(fileimg)-1]
+			if format != "png" && format != "jpg" && format != "jpeg" {
+				return homestay.Core{}, errors.New("file format not png, jpg, or jpeg")
+			}
+		}
+
+		// upload multiple image
+		image := []homestay.Image{}
+		for _, v := range images {
+			imgURL, err := hs.cld.Upload(v)
+			if err != nil {
+				log.Println("error upload image", err)
+				return homestay.Core{}, errors.New("failed to upload images")
+			}
+			image = append(image, homestay.Image{ImageURL: imgURL})
+		}
+	}
+
+	res, err := hs.qry.Update(id, homestayID, updateHomestay)
+	if err != nil {
+		log.Println(err)
+		var msg string
+		if strings.Contains(err.Error(), "not found") {
+			msg = "homestay not found"
+		} else if strings.Contains(err.Error(), "someone") {
+			msg = "access is denied, unauthorized request"
+		} else {
+			msg = "internal server error"
+		}
+		return homestay.Core{}, errors.New(msg)
+	}
+
+	return res, nil
 }
 
 func (hs *homeService) Delete(token interface{}, homestayID uint) error {
+	id := helper.ExtractToken(token)
+
+	err := hs.qry.Delete(id, homestayID)
+	if err != nil {
+		log.Println(err)
+		var msg string
+		if strings.Contains(err.Error(), "not found") {
+			msg = "homestay not found"
+		} else if strings.Contains(err.Error(), "someone") {
+			msg = "access is denied, unauthorized request"
+		} else {
+			msg = "internal server error"
+		}
+		return errors.New(msg)
+	}
+
 	return nil
 }
 
 func (hs *homeService) Myhome(token interface{}) ([]homestay.Core, error) {
-	return []homestay.Core{}, nil
+	id := helper.ExtractToken(token)
+
+	res, err := hs.qry.Myhome(id)
+	if err != nil {
+		log.Println(err)
+		return []homestay.Core{}, errors.New("interval server error")
+	}
+
+	return res, nil
 }
