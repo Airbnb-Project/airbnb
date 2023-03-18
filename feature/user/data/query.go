@@ -27,15 +27,16 @@ func (uq *userQuery) Register(newUser user.Core) (user.Core, error) {
 		return user.Core{}, errors.New("email already registered")
 	}
 
+	// newUser.Role = "user"
 	cnv := CoreToData(newUser)
 	err = uq.db.Create(&cnv).Error
 	if err != nil {
 		log.Println("query register error", err.Error())
 		return user.Core{}, errors.New("cannot create new user")
 	}
+
 	// give id to newuser
 	newUser.ID = cnv.ID
-	newUser.Role = "user"
 
 	return newUser, nil
 }

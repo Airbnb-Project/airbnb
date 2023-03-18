@@ -40,6 +40,7 @@ func (uuc *userUseCase) Register(newUser user.Core) (user.Core, error) {
 		return user.Core{}, errors.New(msg)
 	}
 
+	newUser.Role = "user"
 	newUser.Password = string(hashed)
 	res, err := uuc.qry.Register(newUser)
 	if err != nil {
@@ -50,7 +51,6 @@ func (uuc *userUseCase) Register(newUser user.Core) (user.Core, error) {
 			msg = "server error"
 		}
 		return user.Core{}, errors.New(msg)
-
 	}
 
 	return res, nil
