@@ -27,12 +27,14 @@ func (uq *userQuery) Register(newUser user.Core) (user.Core, error) {
 		return user.Core{}, errors.New("email already registered")
 	}
 
+	// newUser.Role = "user"
 	cnv := CoreToData(newUser)
 	err = uq.db.Create(&cnv).Error
 	if err != nil {
 		log.Println("query register error", err.Error())
 		return user.Core{}, errors.New("cannot create new user")
 	}
+
 	// give id to newuser
 	newUser.ID = cnv.ID
 
@@ -68,6 +70,16 @@ func (uq *userQuery) Profile(userID uint) (user.Core, error) {
 }
 
 func (uq *userQuery) Update(userID uint, updateData user.Core) (user.Core, error) {
+	// make sure if updated email is not duplicate
+	if updateData.Email != "" {
+		dupUser := CoreToData(updateData)
+		err := uq.db.Where("email = ?", updateData.Email).First(&dupUser).Error
+		if err == nil {
+			log.Println("duplicated")
+			return user.Core{}, errors.New("email already registered")
+		}
+	}
+
 	cnv := CoreToData(updateData)
 	usr := User{}
 	qry := uq.db.Model(&usr).Where("id = ?", userID).Updates(&cnv)
