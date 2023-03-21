@@ -6,5 +6,4 @@ type FeedbackResponse struct {
 	Note       string `json:"note"`
 	UserID     uint   `json:"user_id"`
 	HomestayID uint   `json:"homestay_id"`
-	Name       string `json:"name"`
 }
