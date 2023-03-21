@@ -35,7 +35,7 @@ func (fq *feedbackQuery) List(userID uint, homestayID uint) ([]feedback.Core, er
 	err := fq.db.Where("homestay_id = ?", homestayID).Order("created_at DESC").Find(&fb).Error
 	if err != nil {
 		log.Println("show feedback query error", err.Error())
-		return []feedback.Core{}, errors.New("cannot show list feedback")
+		return []feedback.Core{}, errors.New("data not found, cannot show list feedback")
 	}
 
 	list := []feedback.Core{}
