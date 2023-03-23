@@ -14,7 +14,13 @@ type homeImage struct {
 	ImageURL string `json:"image"`
 }
 
+type homeFeedback struct {
+	Rating uint   `json:"rating"`
+	Note   string `json:"note"`
+}
+
 type HomeDetailResponse struct {
 	HomeResponse
-	Images []homeImage `json:"image"`
+	Images    []homeImage    `json:"images"`
+	Feedbacks []homeFeedback `json:"feedbacks"`
 }
