@@ -23,11 +23,9 @@ type Image struct {
 }
 
 type Feedback struct {
-	ID         uint
-	Rating     uint
-	Note       string
-	UserID     uint
-	HomestayID uint
+	ID     uint
+	Rating uint
+	Note   string
 }
 
 type HomeHandler interface {

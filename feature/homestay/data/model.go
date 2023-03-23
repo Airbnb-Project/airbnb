@@ -25,10 +25,8 @@ type Image struct {
 
 type Feedback struct {
 	gorm.Model
-	Rating     uint
-	Note       string
-	UserID     uint
-	HomestayID uint
+	Rating uint
+	Note   string
 }
 
 func DataToCore(data Homestay) homestay.Core {
