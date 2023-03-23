@@ -19,7 +19,7 @@ func New(db *gorm.DB) homestay.HomeData {
 func (hd *homeData) Add(userID uint, newHomestay homestay.Core) (homestay.Core, error) {
 	cnv := CoreToData(newHomestay)
 	cnv.UserID = userID
-	// hd.db.Create(&cnv)
+
 	err := hd.db.Create(&cnv).Error
 	if err != nil {
 		log.Println("query add homestay error", err.Error())
