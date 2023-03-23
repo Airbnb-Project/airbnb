@@ -62,12 +62,13 @@ func CoreToData(data homestay.Core) Homestay {
 	}
 
 	return Homestay{
-		Model:    gorm.Model{ID: data.ID},
-		UserID:   data.UserID,
-		Name:     data.Name,
-		Address:  data.Address,
-		Phone:    data.Phone,
-		Facility: data.Facility,
-		Images:   img,
+		Model:     gorm.Model{ID: data.ID},
+		UserID:    data.UserID,
+		Name:      data.Name,
+		Address:   data.Address,
+		Phone:     data.Phone,
+		Facility:  data.Facility,
+		Images:    img,
+		Feedbacks: []Feedback{},
 	}
 }
