@@ -19,7 +19,7 @@ func New(db *gorm.DB) homestay.HomeData {
 func (hd *homeData) Add(userID uint, newHomestay homestay.Core) (homestay.Core, error) {
 	cnv := CoreToData(newHomestay)
 	cnv.UserID = userID
-	// hd.db.Create(&cnv)
+
 	err := hd.db.Create(&cnv).Error
 	if err != nil {
 		log.Println("query add homestay error", err.Error())
@@ -42,7 +42,7 @@ func (hd *homeData) Add(userID uint, newHomestay homestay.Core) (homestay.Core, 
 
 func (hd *homeData) List(limit int, offset int) (int, []homestay.Core, error) {
 	hs := []Homestay{}
-	err := hd.db.Limit(limit).Offset(offset).Order("created_at DESC, id DESC").Find(&hs).Error
+	err := hd.db.Limit(limit).Offset(offset).Order("id DESC").Find(&hs).Error
 	if err != nil {
 		log.Println("show list query error", err.Error())
 		return 0, []homestay.Core{}, errors.New("data not found, cannot show list homestay")
@@ -69,7 +69,7 @@ func (hd *homeData) List(limit int, offset int) (int, []homestay.Core, error) {
 
 func (hd *homeData) GetbyID(homestayID uint) (homestay.Core, error) {
 	hs := Homestay{}
-	err := hd.db.Where("id = ?", homestayID).First(&hs).Error
+	err := hd.db.Where("id = ?", homestayID).Preload("Feedback").First(&hs).Error
 	if err != nil {
 		log.Println("show by id query error", err.Error())
 		return homestay.Core{}, errors.New("data not found, cannot show detail homestay")

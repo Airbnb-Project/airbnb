@@ -7,18 +7,25 @@ import (
 )
 
 type Core struct {
-	ID       uint
-	UserID   uint
-	Name     string `validate:"required"`
-	Address  string `validate:"min=5"`
-	Phone    string
-	Facility string
-	Images   []Image
+	ID        uint
+	UserID    uint
+	Name      string `validate:"required"`
+	Address   string `validate:"min=5"`
+	Phone     string
+	Facility  string
+	Images    []Image
+	Feedbacks []Feedback
 }
 
 type Image struct {
 	ID       uint
 	ImageURL string
+}
+
+type Feedback struct {
+	ID     uint
+	Rating uint
+	Note   string
 }
 
 type HomeHandler interface {

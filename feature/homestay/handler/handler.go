@@ -76,9 +76,9 @@ func (hh *homeHandler) List() echo.HandlerFunc {
 			return c.JSON(helper.ErrorResponse("failed to marshal response"))
 		}
 
-		// for i := range res {
-		// 	resp[i].Image = res[i].Images[0].ImageURL
-		// }
+		for i := range res {
+			resp[i].Image = res[i].Images[0].ImageURL
+		}
 
 		pagination := helper.PaginationResponse{
 			Page:        paginate["page"].(int),
