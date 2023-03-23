@@ -12,7 +12,24 @@ type Feedback struct {
 	Note       string
 	UserID     uint
 	HomestayID uint
+	// User       User
+	// Homestay   Homestay
 }
+
+// user & homestay struct for preload if needed
+// but must insert struct in entity
+
+// type User struct {
+// 	gorm.Model
+// 	Name  string
+// 	Email string
+// }
+
+// type Homestay struct {
+// 	gorm.Model
+// 	UserID uint
+// 	Name   string
+// }
 
 func DataToCore(data Feedback) feedback.Core {
 	return feedback.Core{
