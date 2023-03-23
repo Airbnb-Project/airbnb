@@ -21,6 +21,6 @@ type FeedbackService interface {
 }
 
 type FeedbackData interface {
-	Add(userID uint, newFeedback Core) error
+	Add(userID uint, homestayID uint, newFeedback Core) error
 	List(userID uint, homestayID uint) ([]Core, error)
 }

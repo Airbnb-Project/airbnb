@@ -16,9 +16,10 @@ func New(db *gorm.DB) feedback.FeedbackData {
 	return &feedbackQuery{db: db}
 }
 
-func (fq *feedbackQuery) Add(userID uint, newFeedback feedback.Core) error {
+func (fq *feedbackQuery) Add(userID uint, homestayID uint, newFeedback feedback.Core) error {
 	cnv := CoreToData(newFeedback)
 	cnv.UserID = userID
+	cnv.HomestayID = homestayID
 	err := fq.db.Create(&cnv).Error
 	if err != nil {
 		log.Println("add feedback query error", err.Error())
@@ -26,6 +27,9 @@ func (fq *feedbackQuery) Add(userID uint, newFeedback feedback.Core) error {
 	}
 
 	newFeedback.ID = cnv.ID
+
+	// result := DataToCore(cnv)
+	// return result, nil
 
 	return nil
 }
