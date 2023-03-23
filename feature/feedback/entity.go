@@ -13,14 +13,17 @@ type Core struct {
 type FeedbackHandler interface {
 	Add() echo.HandlerFunc
 	List() echo.HandlerFunc
+	MyFeedback() echo.HandlerFunc
 }
 
 type FeedbackService interface {
 	Add(token interface{}, homestayID uint, newFeedback Core) error
-	List(token interface{}, homestayID uint) ([]Core, error)
+	List() ([]Core, error)
+	MyFeedback(token interface{}) ([]Core, error)
 }
 
 type FeedbackData interface {
 	Add(userID uint, homestayID uint, newFeedback Core) error
-	List(userID uint, homestayID uint) ([]Core, error)
+	List() ([]Core, error)
+	MyFeedback(userID uint) ([]Core, error)
 }
