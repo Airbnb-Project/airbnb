@@ -28,10 +28,25 @@ func (fs *feedbackService) Add(token interface{}, homestayID uint, newFeedback f
 	return nil
 }
 
-func (fs *feedbackService) List(token interface{}, homestayID uint) ([]feedback.Core, error) {
-	id := helper.ExtractToken(token)
+func (fs *feedbackService) List() ([]feedback.Core, error) {
+	res, err := fs.qry.List()
+	if err != nil {
+		log.Println(err)
+		var msg string
+		if strings.Contains(err.Error(), "not found") {
+			msg = "feedback not found"
+		} else {
+			msg = "internal server error"
+		}
+		return []feedback.Core{}, errors.New(msg)
+	}
 
-	res, err := fs.qry.List(id, homestayID)
+	return res, nil
+}
+
+func (fs *feedbackService) MyFeedback(token interface{}) ([]feedback.Core, error) {
+	id := helper.ExtractToken(token)
+	res, err := fs.qry.MyFeedback(id)
 	if err != nil {
 		log.Println(err)
 		var msg string

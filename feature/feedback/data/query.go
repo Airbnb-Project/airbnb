@@ -2,6 +2,7 @@ package data
 
 import (
 	"airbnb/feature/feedback"
+	"airbnb/feature/homestay/data"
 	"errors"
 	"log"
 
@@ -17,10 +18,18 @@ func New(db *gorm.DB) feedback.FeedbackData {
 }
 
 func (fq *feedbackQuery) Add(userID uint, homestayID uint, newFeedback feedback.Core) error {
+	// find homestay data for insert feedback
+	hs := data.Homestay{}
+	err := fq.db.Where("id = ?", homestayID).First(&hs).Error
+	if err != nil {
+		log.Println("feedback find homestay data query error", err.Error())
+		return errors.New("cannot find homestay data")
+	}
+
 	cnv := CoreToData(newFeedback)
 	cnv.UserID = userID
 	cnv.HomestayID = homestayID
-	err := fq.db.Create(&cnv).Error
+	err = fq.db.Create(&cnv).Error
 	if err != nil {
 		log.Println("add feedback query error", err.Error())
 		return errors.New("cannot add feedback")
@@ -28,18 +37,31 @@ func (fq *feedbackQuery) Add(userID uint, homestayID uint, newFeedback feedback.
 
 	newFeedback.ID = cnv.ID
 
-	// result := DataToCore(cnv)
-	// return result, nil
-
 	return nil
 }
 
-func (fq *feedbackQuery) List(userID uint, homestayID uint) ([]feedback.Core, error) {
+func (fq *feedbackQuery) List() ([]feedback.Core, error) {
 	fb := []Feedback{}
-	err := fq.db.Where("homestay_id = ?", homestayID).Order("created_at DESC").Find(&fb).Error
+	err := fq.db.Order("created_at DESC").Find(&fb).Error
 	if err != nil {
 		log.Println("show feedback query error", err.Error())
 		return []feedback.Core{}, errors.New("data not found, cannot show list feedback")
+	}
+
+	list := []feedback.Core{}
+	for _, v := range fb {
+		list = append(list, DataToCore(v))
+	}
+
+	return list, nil
+}
+
+func (fq *feedbackQuery) MyFeedback(userID uint) ([]feedback.Core, error) {
+	fb := []Feedback{}
+	err := fq.db.Where("id = ?", userID).Find(&fb).Error
+	if err != nil {
+		log.Println("show my feedback query error", err.Error())
+		return []feedback.Core{}, errors.New("data not found, cannot find my feedback")
 	}
 
 	list := []feedback.Core{}

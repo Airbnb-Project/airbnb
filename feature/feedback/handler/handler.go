@@ -5,7 +5,6 @@ import (
 	"airbnb/helper"
 	"log"
 	"net/http"
-	"strconv"
 
 	"github.com/jinzhu/copier"
 	"github.com/labstack/echo/v4"
@@ -45,15 +44,7 @@ func (fh *feedbackHandler) Add() echo.HandlerFunc {
 
 func (fh *feedbackHandler) List() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		token := c.Get("user")
-		param := c.Param("id")
-		homestayID, err := strconv.Atoi(param)
-		if err != nil {
-			log.Println("handler param list feedback error", err.Error())
-			return c.JSON(helper.ErrorResponse("convert id error"))
-		}
-
-		res, err := fh.srv.List(token, uint(homestayID))
+		res, err := fh.srv.List()
 		if err != nil {
 			return c.JSON(helper.ErrorResponse(err.Error()))
 		}
@@ -75,6 +66,26 @@ func (fh *feedbackHandler) List() echo.HandlerFunc {
 			})
 		}
 
-		return c.JSON(helper.SuccessResponse(http.StatusOK, "success show list feedback"))
+		return c.JSON(helper.SuccessResponse(http.StatusOK, "success show list feedback", resp))
+	}
+}
+
+func (fh *feedbackHandler) MyFeedback() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		token := c.Get("user")
+
+		res, err := fh.srv.MyFeedback(token)
+		if err != nil {
+			return c.JSON(helper.ErrorResponse(err.Error()))
+		}
+
+		resp := []FeedbackResponse{}
+		err = copier.Copy(&resp, &res)
+		if err != nil {
+			log.Println("handler my feedback error", err.Error())
+			return c.JSON(helper.ErrorResponse("failed to marshal response"))
+		}
+
+		return c.JSON(helper.SuccessResponse(http.StatusOK, "success show my feedback"))
 	}
 }
