@@ -13,6 +13,7 @@ type Homestay struct {
 	Address   string
 	Phone     string
 	Facility  string
+	Price     int
 	Images    []Image    // `gorm:"foreignKey:HomestayID"`
 	Feedbacks []Feedback // `gorm:"foreignKey:HomestayID"`
 }
@@ -44,6 +45,7 @@ func DataToCore(data Homestay) homestay.Core {
 		Address:   data.Address,
 		Phone:     data.Phone,
 		Facility:  data.Facility,
+		Price:     data.Price,
 		Images:    img,
 		Feedbacks: []homestay.Feedback{},
 	}
@@ -66,6 +68,7 @@ func CoreToData(data homestay.Core) Homestay {
 		Address:   data.Address,
 		Phone:     data.Phone,
 		Facility:  data.Facility,
+		Price:     data.Price,
 		Images:    img,
 		Feedbacks: []Feedback{},
 	}
