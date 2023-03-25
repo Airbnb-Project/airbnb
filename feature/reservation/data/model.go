@@ -16,7 +16,6 @@ type Reservation struct {
 	ReservationDate string
 	TotalPrice      int
 	Status          string
-	PaymentLink     string
 	Bank            string
 	VAnumber        string
 }
@@ -32,7 +31,6 @@ func DataToCore(data Reservation) reservation.Core {
 		ReservationDate: data.ReservationDate,
 		TotalPrice:      data.TotalPrice,
 		Status:          data.Status,
-		PaymentLink:     data.PaymentLink,
 		Bank:            data.Bank,
 		VAnumber:        data.VAnumber,
 	}
@@ -49,7 +47,6 @@ func CoreToData(data reservation.Core) Reservation {
 		ReservationDate: data.ReservationDate,
 		TotalPrice:      data.TotalPrice,
 		Status:          data.Status,
-		PaymentLink:     data.PaymentLink,
 		Bank:            data.Bank,
 		VAnumber:        data.VAnumber,
 	}

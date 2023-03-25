@@ -12,7 +12,6 @@ type Core struct {
 	ReservationDate string
 	TotalPrice      int `validate:"required"`
 	Status          string
-	PaymentLink     string
 	Bank            string `validate:"required"`
 	VAnumber        string
 }
