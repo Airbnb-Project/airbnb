@@ -6,9 +6,13 @@ type Core struct {
 	ID              uint
 	UserID          uint
 	HomestayID      uint
+	Name            string
+	Image           string
+	Address         string
 	Ticket          string
 	Checkin         string `validate:"required"`
 	Checkout        string `validate:"required"`
+	Guest           int
 	ReservationDate string
 	TotalPrice      int `validate:"required"`
 	Status          string
