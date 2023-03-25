@@ -32,7 +32,7 @@ type ReservationService interface {
 	Detail(token interface{}, reservationID uint) (Core, error)
 	Accept(token interface{}, reservationID uint, status string) (Core, error)
 	Cancel(token interface{}, reservationID uint, status string) (Core, error)
-	Callback(tikcet string, status string) error
+	Callback(ticket string, status string) error
 }
 
 type ReservationData interface {
