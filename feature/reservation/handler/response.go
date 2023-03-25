@@ -1,7 +1,7 @@
 package handler
 
 type rsvResponse struct {
-	ID              uint   `json:"id"`
+	ID              uint   `json:"reservation_id"`
 	Ticket          string `json:"ticket"`
 	Name            string `json:"homestay_name"`
 	Image           string `json:"image"`
