@@ -1,6 +1,6 @@
 package handler
 
-type rsvResponse struct {
+type RsvResponse struct {
 	ID              uint   `json:"reservation_id"`
 	Ticket          string `json:"ticket"`
 	Name            string `json:"homestay_name"`
@@ -9,7 +9,7 @@ type rsvResponse struct {
 	ReservationDate string `json:"reservation_date"`
 }
 
-type rsvDetailResponse struct {
+type RsvDetailResponse struct {
 	ID              uint   `json:"id"`
 	Ticket          string `json:"ticket"`
 	Name            string `json:"homestay_name"`
