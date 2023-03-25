@@ -88,7 +88,7 @@ func (hd *homeData) Update(userID uint, homestayID uint, updateHomestay homestay
 	}
 
 	cnv := CoreToData(updateHomestay)
-	qry := hd.db.Where("user_id = ? and id = ?", userID, homestayID).First(&cnv)
+	qry := hd.db.Where("user_id = ? and id = ?", userID, homestayID).Updates(&cnv)
 
 	affrows := qry.RowsAffected
 	if affrows <= 0 {
