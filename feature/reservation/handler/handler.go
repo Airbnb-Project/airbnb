@@ -101,18 +101,56 @@ func (rh *reservationHandler) Detail() echo.HandlerFunc {
 
 func (rh *reservationHandler) Accept() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		return nil
+		token := c.Get("user")
+		param := c.Param("id")
+		reservationID, err := strconv.Atoi(param)
+		if err != nil {
+			log.Println("handler param accept error", err.Error())
+			return c.JSON(helper.ErrorResponse("convert id error"))
+		}
+
+		status := "success"
+		_, err = rh.srv.Accept(token, uint(reservationID), status)
+		if err != nil {
+			return c.JSON(helper.ErrorResponse(err.Error()))
+		}
+
+		return c.JSON(helper.SuccessResponse(http.StatusOK, "success accept reservation"))
 	}
 }
 
 func (rh *reservationHandler) Cancel() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		return nil
+		token := c.Get("user")
+		param := c.Param("id")
+		reservationID, err := strconv.Atoi(param)
+		if err != nil {
+			log.Println("handler param cancel error", err.Error())
+			return c.JSON(helper.ErrorResponse("convert id error"))
+		}
+
+		status := "cancelled"
+		_, err = rh.srv.Cancel(token, uint(reservationID), status)
+		if err != nil {
+			return c.JSON(helper.ErrorResponse(err.Error()))
+		}
+
+		return c.JSON(helper.SuccessResponse(http.StatusOK, "success cancel reservation"))
 	}
 }
 
 func (rh *reservationHandler) Callback() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		return nil
+		input := Callback{}
+		if err := c.Bind(&input); err != nil {
+			return c.JSON(helper.ErrorResponse("bad request"))
+		}
+
+		err := rh.srv.Callback(input.OrderID, input.TransactionStatus)
+		if err != nil {
+			return c.JSON(helper.ErrorResponse(err.Error()))
+		}
+
+		return c.JSON(helper.SuccessResponse(http.StatusOK, "success update transaction"))
 	}
 }
