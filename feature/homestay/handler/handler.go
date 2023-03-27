@@ -200,6 +200,21 @@ func (hh *homeHandler) Myhome() echo.HandlerFunc {
 			return c.JSON(helper.ErrorResponse("failed to marshal response"))
 		}
 
-		return c.JSON(helper.SuccessResponse(http.StatusOK, "success show my homestay"))
+		for _, v := range res {
+			resp = append(resp, HomeResponse{
+				ID:       v.ID,
+				Name:     v.Name,
+				Address:  v.Address,
+				Phone:    v.Phone,
+				Price:    float64(v.Price),
+				Facility: v.Facility,
+			})
+		}
+
+		for i := range res {
+			resp[i].Image = res[i].Images[0].ImageURL
+		}
+
+		return c.JSON(helper.SuccessResponse(http.StatusOK, "success show my homestay", resp))
 	}
 }

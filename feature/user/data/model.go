@@ -16,7 +16,7 @@ type User struct {
 	ProfilePicture string
 	Phone          string
 	Address        string
-	Homestay       []data.Homestay `gorm:"foreignKey:UserID"`
+	Homestay       []data.Homestay // `gorm:"foreignKey:UserID"`
 }
 
 func DataToCore(data User) user.Core {

@@ -13,6 +13,7 @@ type Core struct {
 	Address   string `validate:"min=5"`
 	Phone     string
 	Facility  string
+	Price     int `validate:"required"`
 	Images    []Image
 	Feedbacks []Feedback
 }

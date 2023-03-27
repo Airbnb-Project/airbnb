@@ -86,6 +86,16 @@ func (fh *feedbackHandler) MyFeedback() echo.HandlerFunc {
 			return c.JSON(helper.ErrorResponse("failed to marshal response"))
 		}
 
-		return c.JSON(helper.SuccessResponse(http.StatusOK, "success show my feedback"))
+		for _, v := range res {
+			resp = append(resp, FeedbackResponse{
+				ID:         v.ID,
+				Rating:     v.Rating,
+				Note:       v.Note,
+				UserID:     v.UserID,
+				HomestayID: v.HomestayID,
+			})
+		}
+
+		return c.JSON(helper.SuccessResponse(http.StatusOK, "success show my feedback", resp))
 	}
 }
