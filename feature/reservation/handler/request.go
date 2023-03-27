@@ -9,6 +9,6 @@ type rsvRequest struct {
 }
 
 type Callback struct {
-	OrderID           uint   `json:"order_id" form:"order_id"`
+	OrderID           string `json:"order_id" form:"order_id"`
 	TransactionStatus string `json:"transaction_status" form:"transaction_status"`
 }
