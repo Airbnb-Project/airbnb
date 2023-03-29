@@ -40,9 +40,9 @@ func (fq *feedbackQuery) Add(userID uint, homestayID uint, newFeedback feedback.
 	return nil
 }
 
-func (fq *feedbackQuery) List() ([]feedback.Core, error) {
+func (fq *feedbackQuery) List(homestayID uint) ([]feedback.Core, error) {
 	fb := []Feedback{}
-	err := fq.db.Order("created_at DESC").Find(&fb).Error
+	err := fq.db.Order("created_at DESC").Where("homestay_id = ?", homestayID).Find(&fb).Error
 	if err != nil {
 		log.Println("show feedback query error", err.Error())
 		return []feedback.Core{}, errors.New("data not found, cannot show list feedback")
@@ -58,7 +58,7 @@ func (fq *feedbackQuery) List() ([]feedback.Core, error) {
 
 func (fq *feedbackQuery) MyFeedback(userID uint) ([]feedback.Core, error) {
 	fb := []Feedback{}
-	err := fq.db.Where("id = ?", userID).Find(&fb).Error
+	err := fq.db.Where("user_id = ?", userID).Find(&fb).Error
 	if err != nil {
 		log.Println("show my feedback query error", err.Error())
 		return []feedback.Core{}, errors.New("data not found, cannot find my feedback")

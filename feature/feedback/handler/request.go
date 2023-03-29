@@ -6,3 +6,7 @@ type AddRequest struct {
 	Rating     uint   `json:"rating" form:"rating"`
 	Note       string `json:"note" form:"note"`
 }
+
+type ListRequest struct {
+	HomestayID uint `json:"homestay_id" form:"homestay_id"`
+}

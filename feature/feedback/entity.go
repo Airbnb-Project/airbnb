@@ -18,12 +18,12 @@ type FeedbackHandler interface {
 
 type FeedbackService interface {
 	Add(token interface{}, homestayID uint, newFeedback Core) error
-	List() ([]Core, error)
+	List(homestayID uint) ([]Core, error)
 	MyFeedback(token interface{}) ([]Core, error)
 }
 
 type FeedbackData interface {
 	Add(userID uint, homestayID uint, newFeedback Core) error
-	List() ([]Core, error)
+	List(homestayID uint) ([]Core, error)
 	MyFeedback(userID uint) ([]Core, error)
 }

@@ -28,8 +28,8 @@ func (fs *feedbackService) Add(token interface{}, homestayID uint, newFeedback f
 	return nil
 }
 
-func (fs *feedbackService) List() ([]feedback.Core, error) {
-	res, err := fs.qry.List()
+func (fs *feedbackService) List(homestayID uint) ([]feedback.Core, error) {
+	res, err := fs.qry.List(homestayID)
 	if err != nil {
 		log.Println(err)
 		var msg string
