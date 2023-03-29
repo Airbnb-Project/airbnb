@@ -14,8 +14,8 @@ type Homestay struct {
 	Phone     string
 	Facility  string
 	Price     int
-	Images    []Image    // `gorm:"foreignKey:HomestayID"`
-	Feedbacks []Feedback // `gorm:"foreignKey:HomestayID"`
+	Images    []Image    `gorm:"foreignKey:HomestayID"`
+	Feedbacks []Feedback `gorm:"foreignKey:HomestayID"`
 }
 
 type Image struct {
@@ -39,6 +39,15 @@ func DataToCore(data Homestay) homestay.Core {
 		})
 	}
 
+	fb := []homestay.Feedback{}
+	for _, v := range data.Feedbacks {
+		fb = append(fb, homestay.Feedback{
+			ID:     v.ID,
+			Rating: v.Rating,
+			Note:   v.Note,
+		})
+	}
+
 	return homestay.Core{
 		ID:        data.ID,
 		Name:      data.Name,
@@ -47,7 +56,7 @@ func DataToCore(data Homestay) homestay.Core {
 		Facility:  data.Facility,
 		Price:     data.Price,
 		Images:    img,
-		Feedbacks: []homestay.Feedback{},
+		Feedbacks: fb,
 	}
 }
 
