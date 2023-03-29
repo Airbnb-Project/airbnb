@@ -70,11 +70,14 @@ func (fh *feedbackHandler) List() echo.HandlerFunc {
 
 		for _, v := range res {
 			resp = append(resp, FeedbackResponse{
-				ID:         v.ID,
-				Rating:     v.Rating,
-				Note:       v.Note,
-				UserID:     v.UserID,
-				HomestayID: v.HomestayID,
+				ID:              v.ID,
+				Rating:          v.Rating,
+				Note:            v.Note,
+				UserID:          v.UserID,
+				UserName:        v.User.Name,
+				HomestayID:      v.HomestayID,
+				HomestayName:    v.Homestay.Name,
+				HomestayAddress: v.Homestay.Address,
 			})
 		}
 
