@@ -2,7 +2,6 @@ package data
 
 import (
 	"airbnb/feature/feedback"
-	"airbnb/feature/homestay/data"
 	"errors"
 	"log"
 
@@ -18,18 +17,10 @@ func New(db *gorm.DB) feedback.FeedbackData {
 }
 
 func (fq *feedbackQuery) Add(userID uint, homestayID uint, newFeedback feedback.Core) error {
-	// find homestay data for insert feedback
-	hs := data.Homestay{}
-	err := fq.db.Where("id = ?", homestayID).First(&hs).Error
-	if err != nil {
-		log.Println("feedback find homestay data query error", err.Error())
-		return errors.New("cannot find homestay data")
-	}
-
 	cnv := CoreToData(newFeedback)
 	cnv.UserID = userID
 	cnv.HomestayID = homestayID
-	err = fq.db.Create(&cnv).Error
+	err := fq.db.Create(&cnv).Error
 	if err != nil {
 		log.Println("add feedback query error", err.Error())
 		return errors.New("cannot add feedback")
