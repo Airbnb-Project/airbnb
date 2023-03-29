@@ -55,7 +55,7 @@ func (hd *homeData) List(limit int, offset int) (int, []homestay.Core, error) {
 	hs := []Homestay{}
 	var totalRecord int64
 
-	err := hd.db.Find(&hs).Count(&totalRecord).Error
+	err := hd.db.Table("Homestay").Count(&totalRecord).Error
 	if err != nil {
 		log.Println("find totalrecord query error", err.Error())
 		return 0, []homestay.Core{}, errors.New("data not found")
