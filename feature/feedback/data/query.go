@@ -42,7 +42,7 @@ func (fq *feedbackQuery) Add(userID uint, homestayID uint, newFeedback feedback.
 
 func (fq *feedbackQuery) List(homestayID uint) ([]feedback.Core, error) {
 	fb := []Feedback{}
-	err := fq.db.Order("created_at DESC").Where("homestay_id = ?", homestayID).Find(&fb).Error
+	err := fq.db.Raw("SELECT f.id, f.rating, f.note, u.id, u.name, h.id, h.name, h.address FROM feedbacks f JOIN users u ON u.id = f.user_id JOIN homestays h ON h.id = f.homestay_id WHERE homestay_id = ? AND deleted_at is NULL", homestayID).Error
 	if err != nil {
 		log.Println("show feedback query error", err.Error())
 		return []feedback.Core{}, errors.New("data not found, cannot show list feedback")
