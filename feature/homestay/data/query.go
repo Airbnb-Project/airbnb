@@ -20,7 +20,18 @@ func (hd *homeData) Add(userID uint, newHomestay homestay.Core) (homestay.Core, 
 	cnv := CoreToData(newHomestay)
 	cnv.UserID = userID
 
-	err := hd.db.Create(&cnv).Error
+	var role string
+	err := hd.db.Raw("SELECT role FROM users WHERE user_id = ?", userID).First(&role).Error
+	if err != nil {
+		log.Println("query role homestay error", err.Error())
+		return homestay.Core{}, errors.New("access denied")
+	}
+
+	if role != "host" {
+		return homestay.Core{}, errors.New("access denied")
+	}
+
+	err = hd.db.Create(&cnv).Error
 	if err != nil {
 		log.Println("query add homestay error", err.Error())
 		return homestay.Core{}, errors.New("cannot create homestay")
@@ -42,7 +53,15 @@ func (hd *homeData) Add(userID uint, newHomestay homestay.Core) (homestay.Core, 
 
 func (hd *homeData) List(limit int, offset int) (int, []homestay.Core, error) {
 	hs := []Homestay{}
-	err := hd.db.Limit(limit).Offset(offset).Order("id DESC").Find(&hs).Error
+	var totalRecord int64
+
+	err := hd.db.Find(&hs).Count(&totalRecord).Error
+	if err != nil {
+		log.Println("find totalrecord query error", err.Error())
+		return 0, []homestay.Core{}, errors.New("data not found")
+	}
+
+	err = hd.db.Limit(limit).Offset(offset).Order("id DESC").Find(&hs).Error
 	if err != nil {
 		log.Println("show list query error", err.Error())
 		return 0, []homestay.Core{}, errors.New("data not found, cannot show list homestay")
@@ -62,9 +81,8 @@ func (hd *homeData) List(limit int, offset int) (int, []homestay.Core, error) {
 	for _, v := range hs {
 		list = append(list, DataToCore(v))
 	}
-	var totalRecord int
 
-	return totalRecord, list, nil
+	return int(totalRecord), list, nil
 }
 
 func (hd *homeData) GetbyID(homestayID uint) (homestay.Core, error) {
