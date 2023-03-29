@@ -8,6 +8,20 @@ type Core struct {
 	Note       string
 	UserID     uint
 	HomestayID uint
+	User       User
+	Homestay   Homestay
+}
+
+// for list feedback response
+type User struct {
+	ID   uint
+	Name string
+}
+
+type Homestay struct {
+	ID      uint
+	Name    string
+	Address string
 }
 
 type FeedbackHandler interface {
