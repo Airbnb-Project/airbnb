@@ -128,7 +128,7 @@ func (hs *homeService) Update(token interface{}, homestayID uint, updateHomestay
 	id := helper.ExtractToken(token)
 
 	// check if images are exist
-	if len(images) != 0 {
+	if images != nil {
 		// check format file/images
 		for _, v := range images {
 			fileimg := strings.Split(v.Filename, ".")
