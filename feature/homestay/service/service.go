@@ -60,8 +60,13 @@ func (hs *homeService) Add(token interface{}, newHomestay homestay.Core, imagesD
 
 	res, err := hs.qry.Add(id, newHomestay)
 	if err != nil {
-		log.Println(err)
-		return homestay.Core{}, errors.New("internal server error")
+		var msg string
+		if strings.Contains(err.Error(), "access denied") {
+			msg = "access denied, unauthorized"
+		} else {
+			msg = "internal server error"
+		}
+		return homestay.Core{}, errors.New(msg)
 	}
 
 	return res, nil
