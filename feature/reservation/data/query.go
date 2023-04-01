@@ -53,10 +53,16 @@ func (rd *reservationData) Detail(userID uint, reservationID uint) (reservation.
 		return reservation.Core{}, errors.New("data not found, cannot show detail reservation")
 	}
 
-	return reservation.Core{}, nil
+	return DataToCore(rsv), nil
 }
 
 func (rd *reservationData) Update(userID uint, reservationID uint, status string) (reservation.Core, error) {
+	err := rd.db.Raw("SELECT role FROM user WHERE user_id = ?", userID).Error
+	if err != nil {
+		log.Println("query role reservation update error", err.Error())
+		return reservation.Core{}, errors.New("access denied")
+	}
+
 	rsv := Reservation{}
 	qry := rd.db.Model(&rsv).Where("user_id = ? and id = ?", userID, reservationID).Update("status", status)
 
@@ -66,7 +72,7 @@ func (rd *reservationData) Update(userID uint, reservationID uint, status string
 		return reservation.Core{}, errors.New("no updated data")
 	}
 
-	err := qry.Error
+	err = qry.Error
 	if err != nil {
 		log.Println("query update reservation error", err.Error())
 		return reservation.Core{}, errors.New("cannot update reseration")

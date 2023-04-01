@@ -95,6 +95,8 @@ func (rs *reservationService) Detail(token interface{}, reservationID uint) (res
 
 func (rs *reservationService) Accept(token interface{}, reservationID uint, status string) (reservation.Core, error) {
 	id := helper.ExtractToken(token)
+	var role string
+
 	res, err := rs.qry.Update(id, reservationID, status)
 	if err != nil {
 		log.Println(err)
@@ -107,6 +109,9 @@ func (rs *reservationService) Accept(token interface{}, reservationID uint, stat
 		return reservation.Core{}, errors.New(msg)
 	}
 
+	if role != "host" {
+		return reservation.Core{}, errors.New("access denied")
+	}
 	return res, nil
 }
 
