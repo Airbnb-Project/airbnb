@@ -68,18 +68,18 @@ func (fh *feedbackHandler) List() echo.HandlerFunc {
 			return c.JSON(helper.ErrorResponse("failed to marshal response"))
 		}
 
-		for _, v := range res {
-			resp = append(resp, FeedbackResponse{
-				ID:              v.ID,
-				Rating:          v.Rating,
-				Note:            v.Note,
-				UserID:          v.UserID,
-				UserName:        v.User.Name,
-				HomestayID:      v.HomestayID,
-				HomestayName:    v.Homestay.Name,
-				HomestayAddress: v.Homestay.Address,
-			})
-		}
+		// for _, v := range res {
+		// 	resp = append(resp, FeedbackResponse{
+		// 		ID:              v.ID,
+		// 		Rating:          v.Rating,
+		// 		Note:            v.Note,
+		// 		UserID:          v.UserID,
+		// 		UserName:        v.User.Name,
+		// 		HomestayID:      v.HomestayID,
+		// 		HomestayName:    v.Homestay.Name,
+		// 		HomestayAddress: v.Homestay.Address,
+		// 	})
+		// }
 
 		return c.JSON(helper.SuccessResponse(http.StatusOK, "success show list feedback", resp))
 	}
@@ -101,18 +101,18 @@ func (fh *feedbackHandler) MyFeedback() echo.HandlerFunc {
 			return c.JSON(helper.ErrorResponse("failed to marshal response"))
 		}
 
-		for _, v := range res {
-			resp = append(resp, FeedbackResponse{
-				ID:              v.ID,
-				Rating:          v.Rating,
-				Note:            v.Note,
-				UserID:          v.UserID,
-				UserName:        v.User.Name,
-				HomestayID:      v.HomestayID,
-				HomestayName:    v.Homestay.Name,
-				HomestayAddress: v.Homestay.Address,
-			})
-		}
+		// for _, v := range res {
+		// 	resp = append(resp, FeedbackResponse{
+		// 		ID:              v.ID,
+		// 		Rating:          v.Rating,
+		// 		Note:            v.Note,
+		// 		UserID:          v.UserID,
+		// 		UserName:        v.User.Name,
+		// 		HomestayID:      v.HomestayID,
+		// 		HomestayName:    v.Homestay.Name,
+		// 		HomestayAddress: v.Homestay.Address,
+		// 	})
+		// }
 
 		return c.JSON(helper.SuccessResponse(http.StatusOK, "success show my feedback", resp))
 	}

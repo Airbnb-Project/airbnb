@@ -58,16 +58,16 @@ func (rh *reservationHandler) List() echo.HandlerFunc {
 			return c.JSON(helper.ErrorResponse("failed to marshal response"))
 		}
 
-		for _, v := range res {
-			resp = append(resp, RsvResponse{
-				ID:              v.ID,
-				Ticket:          v.Ticket,
-				Name:            v.Name,
-				Image:           v.Image,
-				TotalPrice:      v.TotalPrice,
-				ReservationDate: v.ReservationDate,
-			})
-		}
+		// for _, v := range res {
+		// 	resp = append(resp, RsvResponse{
+		// 		ID:              v.ID,
+		// 		Ticket:          v.Ticket,
+		// 		Name:            v.Name,
+		// 		Image:           v.Image,
+		// 		TotalPrice:      v.TotalPrice,
+		// 		ReservationDate: v.ReservationDate,
+		// 	})
+		// }
 
 		return c.JSON(helper.SuccessResponse(http.StatusOK, "success show list reservation", resp))
 	}
