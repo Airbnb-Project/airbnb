@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"airbnb/feature/feedback"
 	"airbnb/feature/homestay"
 	"airbnb/helper"
 	"log"
@@ -12,11 +13,12 @@ import (
 )
 
 type homeHandler struct {
-	srv homestay.HomeService
+	srv   homestay.HomeService
+	fbsrv feedback.FeedbackService
 }
 
-func New(h homestay.HomeService) homestay.HomeHandler {
-	return &homeHandler{srv: h}
+func New(h homestay.HomeService, fb feedback.FeedbackService) homestay.HomeHandler {
+	return &homeHandler{srv: h, fbsrv: fb}
 }
 
 func (hh *homeHandler) Add() echo.HandlerFunc {
@@ -217,4 +219,27 @@ func (hh *homeHandler) Myhome() echo.HandlerFunc {
 
 		return c.JSON(helper.SuccessResponse(http.StatusOK, "success show my homestay", resp))
 	}
+}
+
+func (hh *homeHandler) getRating(homestayID uint) (int, error) {
+	var sum int
+	feedback, err := hh.fbsrv.List(homestayID)
+	if err != nil {
+		return 0, err
+	}
+
+	for _, v := range feedback {
+		sum += int(v.Rating)
+		if len(feedback) == 0 {
+			log.Println("no rating found")
+			return 0, nil
+		}
+	}
+
+	if sum == 0 {
+		return 0, nil
+	}
+
+	result := sum / len(feedback)
+	return result, nil
 }
