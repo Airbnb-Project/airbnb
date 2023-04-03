@@ -68,21 +68,21 @@ func ListToCore(data []ReservationModel) []reservation.Core {
 	return core
 }
 
-func DataToCore(data Reservation) reservation.Core {
-	return reservation.Core{
-		ID:              data.ID,
-		UserID:          data.UserID,
-		HomestayID:      data.HomestayID,
-		Ticket:          data.Ticket,
-		Checkin:         data.Checkin,
-		Checkout:        data.Checkout,
-		ReservationDate: data.ReservationDate,
-		TotalPrice:      data.TotalPrice,
-		Status:          data.Status,
-		Bank:            data.Bank,
-		VAnumber:        data.VAnumber,
-	}
-}
+// func DataToCore(data Reservation) reservation.Core {
+// 	return reservation.Core{
+// 		ID:              data.ID,
+// 		UserID:          data.UserID,
+// 		HomestayID:      data.HomestayID,
+// 		Ticket:          data.Ticket,
+// 		Checkin:         data.Checkin,
+// 		Checkout:        data.Checkout,
+// 		ReservationDate: data.ReservationDate,
+// 		TotalPrice:      data.TotalPrice,
+// 		Status:          data.Status,
+// 		Bank:            data.Bank,
+// 		VAnumber:        data.VAnumber,
+// 	}
+// }
 
 func CoreToData(data reservation.Core) Reservation {
 	return Reservation{
