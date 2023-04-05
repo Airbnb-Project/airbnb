@@ -8,7 +8,7 @@ import (
 
 type Core struct {
 	ID             uint
-	Name           string
+	Name           string `validate:"min=3"`
 	Email          string `validate:"required,email"`
 	Password       string `validate:"min=5"`
 	Role           string
