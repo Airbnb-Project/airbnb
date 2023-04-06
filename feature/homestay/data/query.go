@@ -77,6 +77,12 @@ func (hd *homeData) List(limit int, offset int) (int, []homestay.Core, error) {
 		}
 	}
 
+	err = hd.db.Raw("SELECT AVG(rating) FROM feedback WHERE deleted_at is NULL").Error
+	if err != nil {
+		log.Println("avg rating query error", err.Error())
+		return 0, []homestay.Core{}, errors.New("data not found, cannot avg feedback homestay")
+	}
+
 	list := []homestay.Core{}
 	for _, v := range hs {
 		list = append(list, DataToCore(v))
