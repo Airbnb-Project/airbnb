@@ -69,6 +69,7 @@ User can reserve a homestay.
 ## Tech Stack
 
 ## ERD
+![airbnb drawio](https://user-images.githubusercontent.com/119381998/231654211-60b23ea6-226b-431a-8fa4-67c696f36ee1.png)
 
 ## Unit Test
 
@@ -88,15 +89,10 @@ User can reserve a homestay.
 
 3. Dont forget to activate the credential for third party api like cloudinary and midtrans
 4. Create local.env like on local.env.example
-5. Download all packages and dependencies
-    ```bash
-    $ go mod tidy
-    ```
-6. Run the program
+5. Run the program
     ```bash
     $ go run .
     ```
-7. Enjoy
 
 ## Authors
 [![GitHub](https://img.shields.io/badge/griffin-%23121011.svg?style=for-the-badge&logo=github&logoColor=blue)](https://github.com/kgriffinh)
