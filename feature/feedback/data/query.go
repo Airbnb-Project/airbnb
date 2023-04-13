@@ -2,7 +2,6 @@ package data
 
 import (
 	"airbnb/feature/feedback"
-	"airbnb/feature/homestay/data"
 	"errors"
 	"log"
 
@@ -18,18 +17,10 @@ func New(db *gorm.DB) feedback.FeedbackData {
 }
 
 func (fq *feedbackQuery) Add(userID uint, homestayID uint, newFeedback feedback.Core) error {
-	// find homestay data for insert feedback
-	hs := data.Homestay{}
-	err := fq.db.Where("id = ?", homestayID).First(&hs).Error
-	if err != nil {
-		log.Println("feedback find homestay data query error", err.Error())
-		return errors.New("cannot find homestay data")
-	}
-
 	cnv := CoreToData(newFeedback)
 	cnv.UserID = userID
 	cnv.HomestayID = homestayID
-	err = fq.db.Create(&cnv).Error
+	err := fq.db.Create(&cnv).Error
 	if err != nil {
 		log.Println("add feedback query error", err.Error())
 		return errors.New("cannot add feedback")
@@ -40,9 +31,9 @@ func (fq *feedbackQuery) Add(userID uint, homestayID uint, newFeedback feedback.
 	return nil
 }
 
-func (fq *feedbackQuery) List() ([]feedback.Core, error) {
+func (fq *feedbackQuery) List(homestayID uint) ([]feedback.Core, error) {
 	fb := []Feedback{}
-	err := fq.db.Order("created_at DESC").Find(&fb).Error
+	err := fq.db.Raw("SELECT f.id, f.rating, f.note, u.id, u.name, h.id, h.name, h.address FROM feedbacks f JOIN users u ON u.id = f.user_id JOIN homestays h ON h.id = f.homestay_id WHERE homestay_id = ? AND deleted_at is NULL", homestayID).Error
 	if err != nil {
 		log.Println("show feedback query error", err.Error())
 		return []feedback.Core{}, errors.New("data not found, cannot show list feedback")
@@ -58,7 +49,7 @@ func (fq *feedbackQuery) List() ([]feedback.Core, error) {
 
 func (fq *feedbackQuery) MyFeedback(userID uint) ([]feedback.Core, error) {
 	fb := []Feedback{}
-	err := fq.db.Where("id = ?", userID).Find(&fb).Error
+	err := fq.db.Where("user_id = ?", userID).Find(&fb).Error
 	if err != nil {
 		log.Println("show my feedback query error", err.Error())
 		return []feedback.Core{}, errors.New("data not found, cannot find my feedback")

@@ -1,7 +1,9 @@
 package config
 
 import (
+	feedback "airbnb/feature/feedback/data"
 	home "airbnb/feature/homestay/data"
+	reservation "airbnb/feature/reservation/data"
 	"airbnb/feature/user/data"
 	"fmt"
 	"log"
@@ -26,4 +28,7 @@ func Migrate(db *gorm.DB) {
 	db.AutoMigrate(&data.User{})
 	db.AutoMigrate(&home.Homestay{})
 	db.AutoMigrate(&home.Image{})
+	db.AutoMigrate(&feedback.Feedback{})
+	db.AutoMigrate(&reservation.Reservation{})
+
 }

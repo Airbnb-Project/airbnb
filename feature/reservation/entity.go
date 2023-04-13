@@ -12,7 +12,7 @@ type Core struct {
 	Ticket          string
 	Checkin         string `validate:"required"`
 	Checkout        string `validate:"required"`
-	Guest           int
+	Guest           int    `validate:"required"`
 	ReservationDate string
 	TotalPrice      int `validate:"required"`
 	Status          string

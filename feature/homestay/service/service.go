@@ -9,7 +9,7 @@ import (
 	"mime/multipart"
 	"strings"
 
-	"github.com/go-playground/validator"
+	"github.com/go-playground/validator/v10"
 )
 
 type homeService struct {
@@ -60,8 +60,13 @@ func (hs *homeService) Add(token interface{}, newHomestay homestay.Core, imagesD
 
 	res, err := hs.qry.Add(id, newHomestay)
 	if err != nil {
-		log.Println(err)
-		return homestay.Core{}, errors.New("internal server error")
+		var msg string
+		if strings.Contains(err.Error(), "access denied") {
+			msg = "access denied, unauthorized"
+		} else {
+			msg = "internal server error"
+		}
+		return homestay.Core{}, errors.New(msg)
 	}
 
 	return res, nil
@@ -123,7 +128,7 @@ func (hs *homeService) Update(token interface{}, homestayID uint, updateHomestay
 	id := helper.ExtractToken(token)
 
 	// check if images are exist
-	if len(images) != 0 {
+	if images != nil {
 		// check format file/images
 		for _, v := range images {
 			fileimg := strings.Split(v.Filename, ".")

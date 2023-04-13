@@ -44,7 +44,19 @@ func (fh *feedbackHandler) Add() echo.HandlerFunc {
 
 func (fh *feedbackHandler) List() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		res, err := fh.srv.List()
+		input := ListRequest{}
+		if err := c.Bind(&input); err != nil {
+			return c.JSON(http.StatusBadRequest, "input format incorrect")
+		}
+
+		fb := feedback.Core{}
+		err := copier.Copy(&fb, &input)
+		if err != nil {
+			log.Println("handler list feedback error", err.Error())
+			return c.JSON(helper.ErrorResponse("bad request"))
+		}
+
+		res, err := fh.srv.List(input.HomestayID)
 		if err != nil {
 			return c.JSON(helper.ErrorResponse(err.Error()))
 		}
@@ -56,15 +68,18 @@ func (fh *feedbackHandler) List() echo.HandlerFunc {
 			return c.JSON(helper.ErrorResponse("failed to marshal response"))
 		}
 
-		for _, v := range res {
-			resp = append(resp, FeedbackResponse{
-				ID:         v.ID,
-				Rating:     v.Rating,
-				Note:       v.Note,
-				UserID:     v.UserID,
-				HomestayID: v.HomestayID,
-			})
-		}
+		// for _, v := range res {
+		// 	resp = append(resp, FeedbackResponse{
+		// 		ID:              v.ID,
+		// 		Rating:          v.Rating,
+		// 		Note:            v.Note,
+		// 		UserID:          v.UserID,
+		// 		UserName:        v.User.Name,
+		// 		HomestayID:      v.HomestayID,
+		// 		HomestayName:    v.Homestay.Name,
+		// 		HomestayAddress: v.Homestay.Address,
+		// 	})
+		// }
 
 		return c.JSON(helper.SuccessResponse(http.StatusOK, "success show list feedback", resp))
 	}
@@ -86,15 +101,18 @@ func (fh *feedbackHandler) MyFeedback() echo.HandlerFunc {
 			return c.JSON(helper.ErrorResponse("failed to marshal response"))
 		}
 
-		for _, v := range res {
-			resp = append(resp, FeedbackResponse{
-				ID:         v.ID,
-				Rating:     v.Rating,
-				Note:       v.Note,
-				UserID:     v.UserID,
-				HomestayID: v.HomestayID,
-			})
-		}
+		// for _, v := range res {
+		// 	resp = append(resp, FeedbackResponse{
+		// 		ID:              v.ID,
+		// 		Rating:          v.Rating,
+		// 		Note:            v.Note,
+		// 		UserID:          v.UserID,
+		// 		UserName:        v.User.Name,
+		// 		HomestayID:      v.HomestayID,
+		// 		HomestayName:    v.Homestay.Name,
+		// 		HomestayAddress: v.Homestay.Address,
+		// 	})
+		// }
 
 		return c.JSON(helper.SuccessResponse(http.StatusOK, "success show my feedback", resp))
 	}

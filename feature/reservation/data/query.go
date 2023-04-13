@@ -26,11 +26,11 @@ func (rd *reservationData) Create(userID uint, newReservation reservation.Core) 
 
 	newReservation.ID = cnv.ID
 
-	return reservation.Core{}, nil
+	return newReservation, nil
 }
 
 func (rd *reservationData) List(userID uint) ([]reservation.Core, error) {
-	rsv := []Reservation{}
+	rsv := []ReservationModel{}
 	err := rd.db.Where("user_id = ?", userID).Find(&rsv).Error
 	if err != nil {
 		log.Println("query list reservation error", err.Error())
@@ -39,25 +39,31 @@ func (rd *reservationData) List(userID uint) ([]reservation.Core, error) {
 
 	list := []reservation.Core{}
 	for _, v := range rsv {
-		list = append(list, DataToCore(v))
+		list = append(list, ToCore(v))
 	}
 
 	return list, nil
 }
 
 func (rd *reservationData) Detail(userID uint, reservationID uint) (reservation.Core, error) {
-	rsv := Reservation{}
+	rsv := ReservationModel{}
 	err := rd.db.Where("user_id = ? and id = ?", userID, reservationID).First(&rsv).Error
 	if err != nil {
 		log.Println("query detail reservation error", err.Error())
 		return reservation.Core{}, errors.New("data not found, cannot show detail reservation")
 	}
 
-	return reservation.Core{}, nil
+	return ToCore(rsv), nil
 }
 
 func (rd *reservationData) Update(userID uint, reservationID uint, status string) (reservation.Core, error) {
-	rsv := Reservation{}
+	err := rd.db.Raw("SELECT role FROM user WHERE user_id = ?", userID).Error
+	if err != nil {
+		log.Println("query role reservation update error", err.Error())
+		return reservation.Core{}, errors.New("access denied")
+	}
+
+	rsv := ReservationModel{}
 	qry := rd.db.Model(&rsv).Where("user_id = ? and id = ?", userID, reservationID).Update("status", status)
 
 	affrows := qry.RowsAffected
@@ -66,13 +72,13 @@ func (rd *reservationData) Update(userID uint, reservationID uint, status string
 		return reservation.Core{}, errors.New("no updated data")
 	}
 
-	err := qry.Error
+	err = qry.Error
 	if err != nil {
 		log.Println("query update reservation error", err.Error())
 		return reservation.Core{}, errors.New("cannot update reseration")
 	}
 
-	return DataToCore(rsv), nil
+	return ToCore(rsv), nil
 }
 
 func (rd *reservationData) Callback(ticket string, status string) error {

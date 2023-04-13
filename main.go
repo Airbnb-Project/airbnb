@@ -2,16 +2,22 @@ package main
 
 import (
 	"airbnb/config"
+	fbData "airbnb/feature/feedback/data"
+	fbHdl "airbnb/feature/feedback/handler"
+	fbSrv "airbnb/feature/feedback/service"
 	homeData "airbnb/feature/homestay/data"
 	homeHdl "airbnb/feature/homestay/handler"
 	homeSrv "airbnb/feature/homestay/service"
+	rsvData "airbnb/feature/reservation/data"
+	rsvHdl "airbnb/feature/reservation/handler"
+	rsvSrv "airbnb/feature/reservation/service"
 	usrData "airbnb/feature/user/data"
 	usrHdl "airbnb/feature/user/handler"
 	usrSrv "airbnb/feature/user/service"
 	"airbnb/helper"
 	"log"
 
-	"github.com/go-playground/validator"
+	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -24,7 +30,7 @@ func main() {
 
 	v := validator.New()
 	cld := helper.NewCloudinary(cfg)
-	// coreapiMidtrans := helper.NewCoreMidtrans(cfg)
+	coreapiMidtrans := helper.NewCoreMidtrans(cfg)
 
 	config.Migrate(db)
 
@@ -36,6 +42,14 @@ func main() {
 	hData := homeData.New(db)
 	hSrv := homeSrv.New(hData, v, cld)
 	hHdl := homeHdl.New(hSrv)
+
+	fData := fbData.New(db)
+	fSrv := fbSrv.New(fData)
+	fHdl := fbHdl.New(fSrv)
+
+	rData := rsvData.New(db)
+	rSrv := rsvSrv.New(rData, v, coreapiMidtrans)
+	rHdl := rsvHdl.New(rSrv)
 
 	// MIDDLEWARE
 	e.Pre(middleware.RemoveTrailingSlash())
@@ -58,6 +72,17 @@ func main() {
 	e.PUT("/homestays/:id", hHdl.Update(), middleware.JWT([]byte(config.JWT_KEY)))
 	e.DELETE("/homestays/:id", hHdl.Delete(), middleware.JWT([]byte(config.JWT_KEY)))
 	e.GET("/homestays", hHdl.Myhome(), middleware.JWT([]byte(config.JWT_KEY)))
+
+	e.POST("/feedbacks", fHdl.Add(), middleware.JWT([]byte(config.JWT_KEY)))
+	e.GET("/feedbacks", fHdl.List())
+	e.GET("/feedbacks", fHdl.MyFeedback(), middleware.JWT([]byte(config.JWT_KEY)))
+
+	e.POST("/reservations", rHdl.Create(), middleware.JWT([]byte(config.JWT_KEY)))
+	e.POST("/reservations/callback", rHdl.Callback())
+	e.GET("/reservations", rHdl.List(), middleware.JWT([]byte(config.JWT_KEY)))
+	e.GET("/reservations/:id", rHdl.Detail(), middleware.JWT([]byte(config.JWT_KEY)))
+	e.PUT("/reservations/:id/accept", rHdl.Accept(), middleware.JWT([]byte(config.JWT_KEY)))
+	e.PUT("/reservations/:id/cancel", rHdl.Cancel(), middleware.JWT([]byte(config.JWT_KEY)))
 
 	if err := e.Start(":8000"); err != nil {
 		log.Println(err.Error())
